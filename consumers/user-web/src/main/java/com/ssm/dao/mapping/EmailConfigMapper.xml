@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.EmailConfigMapper" >
+    <resultMap id="resultMapEmailConfigMapper" type="com.ssm.domain.EmailConfig" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+        
+        <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+        
+        <result column="seller_name" property="sellerName" jdbcType="VARCHAR" />
+        
+        <result column="seller_id" property="sellerId" jdbcType="VARCHAR" />
+        
+        <result column="to_email" property="toEmail" jdbcType="VARCHAR" />
+        
+        <result column="cc_email" property="ccEmail" jdbcType="VARCHAR" />
+        
+        <result column="flag" property="flag" jdbcType="CHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        type_name,
+        type_id,
+        seller_name,
+        seller_id,
+        to_email,
+        cc_email,
+        flag,
+        create_time,
+        update_time
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="typeName!=null and typeName!=''">
+        and type_name  like '%${typeName}%' 
+        </if>
+        <if test="typeId!=null and typeId!=''">
+        and type_id = #{typeId,jdbcType=VARCHAR}
+        </if>
+        <if test="sellerName!=null and sellerName!=''">
+        and seller_name = #{sellerName,jdbcType=VARCHAR}
+        </if>
+        <if test="sellerId!=null and sellerId!=''">
+        and seller_id = #{sellerId,jdbcType=VARCHAR}
+        </if>
+        <if test="toEmail!=null and toEmail!=''">
+        and to_email = #{toEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="ccEmail!=null and ccEmail!=''">
+        and cc_email = #{ccEmail,jdbcType=VARCHAR}
+        </if>
+        <if test="flag!=null and flag!=''">
+        and flag = #{flag,jdbcType=CHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+    </sql>
+    
+    <select id="getById" resultMap="resultMapEmailConfigMapper" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from t_email_config
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.ssm.domain.EmailConfig" resultMap="resultMapEmailConfigMapper">
+        select * from t_email_config where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPage" parameterType="com.ssm.domain.EmailConfig" resultMap="resultMapEmailConfigMapper">
+        select * from t_email_config where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.ssm.domain.EmailConfig" resultType="int">
+        select count(1) from t_email_config where 1=1 
+        <include refid="where" />
+    </select>
+   
+    <insert id="save" parameterType="com.ssm.domain.EmailConfig" >
+        insert into t_email_config (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{typeName,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{sellerName,jdbcType=VARCHAR},
+        #{sellerId,jdbcType=VARCHAR},
+        #{toEmail,jdbcType=VARCHAR},
+        #{ccEmail,jdbcType=VARCHAR},
+        #{flag,jdbcType=CHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    
+    <delete id="remove" parameterType="java.lang.String" >
+        delete from t_email_config
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <update id="update" parameterType="com.ssm.domain.EmailConfig" >
+        update t_email_config
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null" >
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null" >
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="sellerName != null" >
+                seller_name = #{sellerName,jdbcType=VARCHAR},
+            </if>
+            <if test="sellerId != null" >
+                seller_id = #{sellerId,jdbcType=VARCHAR},
+            </if>
+            <if test="toEmail != null" >
+                to_email = #{toEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="ccEmail != null" >
+                cc_email = #{ccEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null" >
+                flag = #{flag,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateEmailBySellerIdAndTypes" parameterType="com.ssm.domain.EmailConfig" >
+        update t_email_config
+        <set>
+            <if test="toEmail != null" >
+                to_email = #{toEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="ccEmail != null" >
+                cc_email = #{ccEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null" >
+                flag = #{flag,jdbcType=CHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where seller_id = #{sellerId,jdbcType=VARCHAR}
+       		and type_id = '-1'
+    </update>
+    <delete id="removeEmailBySellerIdAndTypes" parameterType="java.lang.String" >
+        delete from t_email_config
+        where id = #{id,jdbcType=VARCHAR}
+           and type_id = '-1'
+    </delete>
+</mapper>

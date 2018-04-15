@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+
+  <localRepository>
+        D:\m2\repository
+  </localRepository>
+  	
+  <servers>
+	
+	  <server>    
+		<id>releases</id>    
+		<username>admin</username>    
+		<password>admin123</password>    
+	  </server> 
+	  
+	  <server>    
+		<id>snapshots</id>    
+		<username>admin</username>    
+		<password>admin123</password>    
+	  </server> 
+	  
+    </servers>
+	
+    <!-- <server>
+      <id>releases</id>
+      <username>deployment</username>
+      <password><![CDATA[deployment123]]></password>
+    </server>
+    <server>
+      <id>snapshots</id>
+      <username>deployment</username>
+      <password><![CDATA[deployment123]]></password>
+    </server>
+    <server>
+      <id>nexus-releases</id>
+      <username>deployment</username>
+      <password><![CDATA[deployment123]]></password>
+    </server>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>deployment</username>
+      <password><![CDATA[deployment123]]></password>
+    </server>
+    <server>
+      <id>service-releases</id>
+      <username>service</username>
+      <password><![CDATA[asd!@#]]></password>
+    </server>
+    <server>
+      <id>service-snapshots</id>
+      <username>service</username>
+      <password><![CDATA[asd!@#]]></password>
+    </server>
+    <server>
+      <id>thirdparty</id>
+      <username>deployment</username>
+      <password><![CDATA[deployment123]]></password>
+    </server>	-->	
+	
+  </servers>  
+  
+<mirrors>
+	<mirror>   
+		<id>Central</id>   
+		<url>http://repo1.maven.org/maven2</url>   
+		<mirrorOf>central</mirrorOf>   
+	</mirror>  
+	<mirror>
+	    <id>nexus</id>
+	    <mirrorOf>*</mirrorOf>
+	    <url>http://localhost/nexus/content/groups/public/</url>
+	 </mirror>
+     <mirror>     
+       <id>snapshots</id>     
+      <mirrorOf>*</mirrorOf>     
+       <url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>     
+     </mirror> 
+	      <mirror>     
+       <id>releases</id>     
+      <mirrorOf>*</mirrorOf>     
+       <url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>     
+     </mirror> 
+	 
+	
+</mirrors>
+
+
+<profiles>
+  
+	<!-- id自己随便取 使用mvn命令发布的时候要使用到这个id,发布的时候会使用我们在profile中定义的properties中的变量值去替换<version></version>中的值 -->
+	<!-- <profile>
+		<id>myRelease</id>  
+		<properties>
+			<project.release.version>1.1</project.release.version>
+		</properties>
+	</profile> -->
+    
+	<profile>
+      <id>jdk-1.8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <repositories>
+        <repository>
+          <id>jdk18</id>
+          <name>Repository for JDK 1.8 builds</name>
+          <url>http://www.myhost.com/maven/jdk18</url>
+          <layout>default</layout>
+          <snapshotPolicy>always</snapshotPolicy>
+        </repository>
+      </repositories>
+	  <maven.compiler.source>1.8</maven.compiler.source>  
+	  <maven.compiler.target>1.8</maven.compiler.target>  
+	  <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    </profile>
+    
+    <profile>    
+		<id>nexus</id>   
+        <activation>
+          <jdk>1.8</jdk>
+          <activeByDefault>true</activeByDefault>		  
+        </activation>
+		
+		<properties>
+		  <maven.compiler.source>1.8</maven.compiler.source>  
+	      <maven.compiler.target>1.8</maven.compiler.target>  
+	      <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+		</properties>
+		
+		<repositories>    
+		
+		  <repository>    
+			<id>releases</id>    
+			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>    
+			<releases><enabled>true</enabled></releases>    
+			<snapshots><enabled>true</enabled></snapshots>    
+		  </repository> 
+		  
+		  <repository>    
+			<id>snapshots</id>    
+			<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>    
+			<releases><enabled>true</enabled></releases>    
+			<snapshots><enabled>true</enabled></snapshots>    
+		  </repository>
+		  
+		  <repository>    
+			<id>nexus</id>    
+			<url>http://localhost:8081/nexus/content/groups/public/</url>    
+			<releases><enabled>true</enabled></releases>    
+			<snapshots><enabled>true</enabled></snapshots>    
+		  </repository>
+		  
+		</repositories>
+		
+		<pluginRepositories>    
+		   <pluginRepository>    
+			  <id>releases</id>    
+			   <url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>    
+			   <releases><enabled>true</enabled></releases>    
+			   <snapshots><enabled>true</enabled></snapshots>    
+			 </pluginRepository> 
+			 
+			 <pluginRepository>    
+			   <id>snapshots</id>    
+				<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>    
+			  <releases><enabled>true</enabled></releases>    
+			   <snapshots><enabled>true</enabled></snapshots>    
+		   </pluginRepository>
+		   
+		   <pluginRepository>    
+			 <id>nexus</id>    
+			 <url>http://localhost:8081/nexus/content/groups/public/</url>    
+			 <releases><enabled>true</enabled></releases>    
+			 <snapshots><enabled>true</enabled></snapshots>     
+		   </pluginRepository> 
+		   
+	    </pluginRepositories>    
+		
+    </profile> 
+  
+    <!-- <profile>
+      <id>test</id>
+      <repositories>
+        <repository>
+          <id>central-test</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+
+        <repository>
+          <id>thirdparty-test</id>
+          <url>http://thirdparty</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>	
+
+        <repository>
+          <id>codehaus-snapshots</id>
+          <url>http://snapshots.repository.codehaus.org</url>
+      </repository>
+      </repositories>
+     <pluginRepositories>
+        <pluginRepository>
+          <id>central-test</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile> -->
+    <!--profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <environment.type>dev</environment.type>
+      </properties>
+    </profile-->    
+	
+</profiles>
+  
+<activeProfiles>    
+	<activeProfile>nexus</activeProfile> 
+	
+</activeProfiles> 
+  
+  <!-- <activeProfiles>
+    <activeProfile>test</activeProfile>
+  </activeProfiles> -->
+  
+</settings>

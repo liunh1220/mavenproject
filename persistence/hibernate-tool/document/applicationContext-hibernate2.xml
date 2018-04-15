@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/tx  
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/jee  
+		http://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
+
+	<description>Spring公共配置</description>
+	
+	<!-- <bean id="memberDataSourceMaster" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+		<constructor-arg>
+			<ref bean="dataSource" />
+		</constructor-arg>
+	</bean> -->
+
+	<!-- 定义受环境影响易变的变量 -->
+	<!-- <bean id="propertyConfigurer" class="com.example.hibernate.util.AnnotationBeanPostProcessor">
+		<property name="localOverride" value="true" />
+		<property name="locations">
+			<list>
+				<value>jdbc.properties</value>
+			</list>
+		</property>
+	</bean> -->
+	 <bean id="propertyConfigurer"  
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="location" value="classpath:jdbc.properties" />  
+    </bean>
+	
+	<!-- <bean name="dataSource1" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+      <property name="url" value="${jdbc.url}" />
+      <property name="username" value="${jdbc.username}" />
+      <property name="password" value="${jdbc.password}" />
+	  <property name="initialSize" value="1" /> 
+	  <property name="minIdle" value="1" /> 
+	  <property name="maxActive" value="10" />
+	  <property name="maxWait" value="10000" />
+	  <property name="timeBetweenEvictionRunsMillis" value="60000" />
+	  <property name="minEvictableIdleTimeMillis" value="300000" />
+	  <property name="testWhileIdle" value="true" />
+	  <property name="testOnBorrow" value="true" /> 
+	  <property name="testOnReturn" value="false" />
+	  <property name="poolPreparedStatements" value="true" /> 
+	  <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+	  <property name="defaultAutoCommit" value="true" />
+	  <property name="validationQuery" value="${jdbc.validationQuery}" /> 
+	  <property name="filters" value="stat" /> 
+	  <property name="dbType" value="${jdbc.dbType}" /> 
+	  <property name="proxyFilters"> 
+	      <list> 
+	         <ref bean="logFilter" /> 
+	      </list> 
+	  </property> 
+    </bean> -->
+    
+	<!-- c3p0 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass"><value>${jdbc.driverClassName}</value></property>
+		<property name="jdbcUrl"><value>${jdbc.url}</value></property>
+		<property name="user" ><value>${jdbc.username}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+		<property name="minPoolSize"><value>5</value></property>
+		<property name="maxPoolSize"><value>200</value></property>
+		<property name="initialPoolSize"><value>5</value></property>
+		<property name="maxIdleTime"><value>60</value></property>
+		<property name="acquireIncrement"><value>5</value></property>
+		<property name="idleConnectionTestPeriod"><value>60</value></property>
+		<property name="acquireRetryAttempts"><value>30</value></property>
+		<property name="numHelperThreads"><value>3</value></property>
+		<property name="acquireRetryDelay"><value>1000</value></property>
+		<property name="propertyCycle"><value>300</value></property>
+		<property name="checkoutTimeout"><value>20000</value></property>
+	</bean>
+
+	<!-- Hibernate配置 -->
+	<bean id="sessionFactory" name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" >
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<!-- <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>  -->
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop> 
+				<prop key="hibernate.cache.provider_class">org.springframework.cache.ehcache.EhCacheCacheManager</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.batch_size}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="query.substitutions">true 1,false 0</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="hibernate.search.autoregister_listeners">false</prop>
+				<prop key="hibernate.physical_naming_strategy">org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list> 
+				<value>com.example.hibernate.entity.pojo</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 动态数据源切换 -->
+	<!-- <bean id="dataSourceAdvice" class="com.example.hibernate.util.DataSourceAdvice" /> -->
+	<!-- 订单过滤动态数据源切换 -->
+	<!-- <bean id="dataSourceAdviceForFilter" class="com.example.hibernate.util.DataSourceAdviceForFilter" /> -->
+	<!-- 动态数据源切换 -->
+	<!-- <bean id="dynamicDataSource" class="com.example.hibernate.util.DynamicDataSource">
+         <property name="targetDataSources">
+             <map key-type="java.lang.String">
+                 <entry key="slave1" value-ref="dataSource" />
+                 <entry key="master" value-ref="dataSource1" />
+             </map>
+         </property>
+         <property name="defaultTargetDataSource" ref="dataSource" />
+     </bean> -->
+     
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+	    <property name="sessionFactory" ref="sessionFactory"/>
+	    <property name="cacheQueries" value="true"/>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+    <!-- 事务切面  -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="append*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="modify*" propagation="REQUIRED" />
+            <tx:method name="edit*" propagation="REQUIRED" />
+            <tx:method name="del*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="remove*" propagation="REQUIRED" />
+            <tx:method name="repair" propagation="REQUIRED" />
+            <tx:method name="delAndRepair" propagation="REQUIRED" />
+            <tx:method name="get*" propagation="SUPPORTS" />
+            <tx:method name="find*" propagation="SUPPORTS" />
+            <tx:method name="load*" propagation="SUPPORTS" />
+            <tx:method name="search*" propagation="SUPPORTS" />
+            <tx:method name="datagrid*" propagation="SUPPORTS" />
+			<tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 事务AOP -->
+	<aop:config proxy-target-class="true">
+		<aop:advisor pointcut="(execution(* com.example.hibernate.service.*.*(..))) or execution(* com.example.hibernate.service.*.*.*(..))" advice-ref="txAdvice" />
+		<aop:advisor pointcut="(execution(* com.example.hibernate.dao.*.*.*(..))) or execution(* com.example.hibernate.dao.*.*(..))" advice-ref="txAdvice" />
+	</aop:config>
+	
+    <!-- <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter"> 
+	  <property name="statementExecutableSqlLogEnable" value="false" /> 
+    </bean> -->
+ 
+</beans>

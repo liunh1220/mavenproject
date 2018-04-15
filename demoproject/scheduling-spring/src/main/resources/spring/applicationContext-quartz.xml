@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd   
+	    http://www.springframework.org/schema/jee 
+	    http://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
+	
+	<!-- Cron表达式范例：秒 分 时 日 月 周 年
+                 每隔5秒执行一次：*/5 * * * * ?
+                 每隔1分钟执行一次：0 */1 * * * ?
+                 每天23点执行一次：0 0 23 * * ?
+                 每天凌晨1点执行一次：0 0 1 * * ?
+                 每月1号凌晨1点执行一次：0 0 1 1 * ?
+                 每月最后一天23点执行一次：0 0 23 L * ?
+                 每周星期天凌晨1点实行一次：0 0 1 ? * L
+                 在26分、29分、33分执行一次：0 26,29,33 * * * ?
+                 每天的0点、13点、18点、21点都执行一次：0 0 0,13,18,21 * * ?
+	 -->
+	<!-- 线程执行器配置，用于任务注册 -->
+	<bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="100" />
+		<property name="queueCapacity" value="500" />
+	</bean>
+	
+	<!-- 定时任务测试类    要执行定时任务的类-->
+	<bean id="quartaTestClass" class="com.example.quartz.quartz.QuartaTest"></bean>
+	
+	<!-- 定时任务测试 -->
+	<bean id="quartaTestJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartaTestClass" /><!-- ref为配置的com.quartz.QuartaTest类的bean的id -->
+		<property name="targetMethod" value="quartaTest" /><!-- value为com.quartz.QuartaTest类中要执行的方法 -->
+	</bean>
+	<bean id="quartaTestJobTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="quartaTestJobDetail" /><!-- ref为要执行任务的bean的id -->
+		<property name="cronExpression" value="*/5 * * * * ?" /><!-- quartz Cron表达式 -->
+	</bean>
+	
+	<!--设置调度 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<bean id="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list><ref bean="quartaTestJobTime" /></list>
+		</property>
+		<property name="taskExecutor" ref="executor" />
+	</bean>
+	
+</beans> 

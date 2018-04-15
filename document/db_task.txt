@@ -1,0 +1,54 @@
+
+drop table if exists t_system_timed_task_abnormal;
+
+drop table if exists t_system_timed_task_manage;
+
+drop table if exists t_system_timed_task_running_time;
+
+
+
+/*==============================================================*/
+/* Table: t_system_timed_task_abnormal                                  */
+/*==============================================================*/
+
+CREATE TABLE `t_system_timed_task_abnormal` (
+  `abnm_id` varchar(25) NOT NULL COMMENT '主键ID',
+  `job_id` varchar(25) NOT NULL COMMENT '定时任务ID',
+  `abnm_content` text COMMENT '异常内容',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`abnm_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='定时任务异常表';
+
+
+/*==============================================================*/
+/* Table: t_system_timed_task_manage                                  */
+/*==============================================================*/
+
+CREATE TABLE `t_system_timed_task_manage` (
+  `job_id` varchar(25) NOT NULL COMMENT '主键ID',
+  `job_name` varchar(100) NOT NULL COMMENT '任务名称',
+  `execution_clazz` varchar(300) NOT NULL COMMENT '执行类',
+  `execution_mathod` varchar(100) NOT NULL COMMENT '执行方法',
+  `execution_time` varchar(100) NOT NULL COMMENT '执行时间',
+  `enabled_status` enum('ENABLE','DISABLE') NOT NULL DEFAULT 'ENABLE' COMMENT '启用状态；ENABLE：启用，DISABLE：禁用',
+  `start_time` timestamp NULL DEFAULT NULL COMMENT '任务最近运行开始时间',
+  `end_time` timestamp NULL DEFAULT NULL COMMENT '任务最近运行结束时间',
+  `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `extend_param` varchar(200) DEFAULT NULL COMMENT '扩展参数',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`job_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='定时任务管理表';
+
+
+/*==============================================================*/
+/* Table: t_system_timed_task_running_time                                  */
+/*==============================================================*/
+
+CREATE TABLE `t_system_timed_task_running_time` (
+  `run_id` varchar(25) NOT NULL COMMENT '主键ID',
+  `job_id` varchar(25) NOT NULL COMMENT '任务ID',
+  `duration` varchar(20) NOT NULL COMMENT '持续时间',
+  `start_time` timestamp NULL DEFAULT NULL COMMENT '任务最近运行开始时间',
+  `end_time` timestamp NULL DEFAULT NULL COMMENT '任务最近运行结束时间',
+  PRIMARY KEY (`run_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='定时任务运行时间表';

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/rabbit 
+	http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+
+	<!-- 连接服务配置 -->
+	<rabbit:connection-factory id="connectionFactory" addresses="${jms.test.consumer.host}" channel-cache-size="30" />
+	<rabbit:connection-factory id="listenerConnectionFactory" addresses="${jms.test.consumer.host}" channel-cache-size="30" />
+	<rabbit:admin connection-factory="connectionFactory" />
+
+	<bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter">
+		<property name="classMapper">
+			<bean class="org.springframework.amqp.support.converter.DefaultClassMapper">
+			</bean>
+		</property>
+	</bean>
+
+	<!-- queue 队列声明 -->
+	<rabbit:queue id="orderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="orderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitPromotionRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitPromotionRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitScheduleRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitScheduleRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitPoRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitPoRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOmniOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitOmniOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitCancelledOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitCancelledOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOccupiedOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="jitOccupiedOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="refundRequestQueue" durable="true" auto-delete="false" exclusive="false" name="refundRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="wlbOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="wlbOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="chainREOrdersRequestQueue" durable="true" auto-delete="false" exclusive="false" name="chainREOrdersRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="taobaoInventoryQueue" durable="true" auto-delete="false" exclusive="false" name="taobaoInventoryQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="chainSkuRequestQueue" durable="true" auto-delete="false" exclusive="false" name="chainSkuRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="fenxiaoScitemRequestQueue" durable="true" auto-delete="false" exclusive="false" name="fenxiaoScitemRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="invoiceRequestQueue" durable="true" auto-delete="false" exclusive="false" name="invoiceRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="publicRequestQueue" durable="true" auto-delete="false" exclusive="false" name="publicRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="orderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="orderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitPromotionResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitPromotionResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitScheduleResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitScheduleResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitPoResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitPoResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOmniOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitOmniOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitCancelledOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitCancelledOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="jitOccupiedOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="jitOccupiedOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="refundResponseQueue" durable="true" auto-delete="false" exclusive="false" name="refundResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="wlbOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="wlbOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="chainREOrdersResponseQueue" durable="true" auto-delete="false" exclusive="false" name="chainREOrdersResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="chainSkuResponseQueue" durable="true" auto-delete="false" exclusive="false" name="chainSkuResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="fenxiaoScitemResponseQueue" durable="true" auto-delete="false" exclusive="false" name="fenxiaoScitemResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="invoiceResponseQueue" durable="true" auto-delete="false" exclusive="false" name="invoiceResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="publicResponseQueue" durable="true" auto-delete="false" exclusive="false" name="publicResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="chainOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="chainOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="taobaoSkuRequestQueue" durable="true" auto-delete="false" exclusive="false" name="taobaoSkuRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="taobaoSkuResponseQueue" durable="true" auto-delete="false" exclusive="false" name="taobaoSkuResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="workOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="workOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="workOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="workOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="workOrder2WOSRequestQueue" durable="true" auto-delete="false" exclusive="false" name="workOrder2WOSRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="workOrder2WOSResponseQueue" durable="true" auto-delete="false" exclusive="false" name="workOrder2WOSResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="vipreturnRequestQueue" durable="true" auto-delete="false" exclusive="false" name="vipreturnRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="vipreturnResponseQueue" durable="true" auto-delete="false" exclusive="false" name="vipreturnResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="vipActualStorageRequestQueue" durable="true" auto-delete="false" exclusive="false" name="vipActualStorageRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="vipActualStorageResponseQueue" durable="true" auto-delete="false" exclusive="false" name="vipActualStorageResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="refundOrderRequestQueue" durable="true" auto-delete="false" exclusive="false" name="refundOrderRequestQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="refundOrderResponseQueue" durable="true" auto-delete="false" exclusive="false" name="refundOrderResponseQueue.v2">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+			<entry key="x-dead-letter-exchange" value="dead.letter.exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead.letter" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue id="dead_letter_queue" name="dead.letter.queue" durable="true">
+		<rabbit:queue-arguments>
+			<entry key="x-ha-policy" value="all" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<!-- exchange queue binging key 绑定 -->
+	<rabbit:direct-exchange name="outside-exchange-v2" durable="true" auto-delete="false" id="outside-exchange-v2">
+		<rabbit:bindings>
+			<rabbit:binding queue="orderResponseQueue.v2" key="orderResponseQueue.v2_key" />
+			<rabbit:binding queue="jitOrderResponseQueue.v2" key="jitOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="jitPromotionResponseQueue.v2" key="jitPromotionResponseQueue.v2_key" />
+			<rabbit:binding queue="jitScheduleResponseQueue.v2" key="jitScheduleResponseQueue.v2_key" />
+			<rabbit:binding queue="jitPoResponseQueue.v2" key="jitPoResponseQueue.v2_key" />
+			<rabbit:binding queue="jitOmniOrderResponseQueue.v2" key="jitOmniOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="jitCancelledOrderResponseQueue.v2" key="jitCancelledOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="jitOccupiedOrderResponseQueue.v2" key="jitOccupiedOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="refundResponseQueue.v2" key="refundResponseQueue.v2_key" />
+			<rabbit:binding queue="wlbOrderResponseQueue.v2" key="wlbOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="chainREOrdersResponseQueue.v2" key="chainREOrdersResponseQueue.v2_key" />
+			<rabbit:binding queue="chainSkuResponseQueue.v2" key="chainSkuResponseQueue.v2_key" />
+			<rabbit:binding queue="fenxiaoScitemResponseQueue.v2" key="fenxiaoScitemResponseQueue.v2_key" />
+			<rabbit:binding queue="invoiceResponseQueue.v2" key="invoiceResponseQueue.v2_key" />
+			<rabbit:binding queue="publicResponseQueue.v2" key="publicResponseQueue.v2_key" />
+			<rabbit:binding queue="taobaoSkuResponseQueue.v2" key="taobaoSkuResponseQueue.v2_key" />
+			<rabbit:binding queue="workOrderResponseQueue.v2" key="workOrderResponseQueue.v2_key" />
+			<rabbit:binding queue="workOrder2WOSResponseQueue.v2" key="workOrder2WOSResponseQueue.v2_key" />
+			<rabbit:binding queue="vipreturnResponseQueue.v2" key="vipreturnResponseQueue.v2_key" />
+			<rabbit:binding queue="vipActualStorageResponseQueue.v2" key="vipActualStorageResponseQueue.v2_key" />
+			<rabbit:binding queue="refundOrderResponseQueue.v2" key="refundOrderResponseQueue.v2_key" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	
+	<rabbit:direct-exchange name="dead.letter.exchange" durable="true" id="dead_letter_exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="dead.letter.queue" key="dead.letter" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<!-- spring template声明 -->
+	<rabbit:template exchange="outside-exchange-v2" id="amqpTemplate" connection-factory="connectionFactory" />
+
+</beans>

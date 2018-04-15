@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.JobMapper" >
+    
+    <resultMap id="sysmgtJobMapper" type="com.ssm.domain.Job" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+        <result column="cron_expression" property="cronExpression" jdbcType="VARCHAR" />
+        <result column="job_class" property="jobClass" jdbcType="VARCHAR" />
+        <result column="running_ip" property="runningIp" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="grade" property="grade" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="job_param" property="jobParam" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="enabled_flag" property="enabledFlag" jdbcType="CHAR" />
+        <result column="grade" property="grade" jdbcType="CHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id, name, group_name, cron_expression, job_class, running_ip, status, description, 
+           create_by, create_time, update_by, update_time, enabled_flag, grade, job_param
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+        and name like '%${name}%'
+        </if>
+        <if test="groupName!=null and groupName!=''">
+        and group_name = #{groupName,jdbcType=VARCHAR}
+        </if>
+        <if test="cronExpression!=null and cronExpression!=''">
+        and cron_expression = #{cronExpression,jdbcType=VARCHAR}
+        </if>
+        <if test="jobClass!=null and jobClass!=''">
+        and job_class like '%${jobClass}%'
+        </if>
+        <if test="runningIp!=null and runningIp!=''">
+        and running_ip like '%${runningIp}%'
+        </if>
+        <if test="status!=null and status!=''">
+        and status = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="grade!=null and grade!=''">
+        and grade = #{grade,jdbcType=VARCHAR}
+        </if>
+        <if test="description!=null and description!=''">
+        and description like '%${description}%'
+        </if>
+        <if test="createBy!=null and createBy!=''">
+        and create_by = #{createBy,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateBy!=null and updateBy!=''">
+        and update_by = #{updateBy,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="enabledFlag!=null and enabledFlag!=''">
+        and enabled_flag = #{enabledFlag,jdbcType=CHAR}
+        </if>
+    </sql>
+    
+    <select id="getById" resultMap="sysmgtJobMapper" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from t_job
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.ssm.domain.Job" resultMap="sysmgtJobMapper">
+        select * from t_job where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPage" parameterType="com.ssm.domain.Job" resultMap="sysmgtJobMapper">
+        select * from t_job where 1=1 
+        <include refid="where" />
+        order by group_name,name
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.ssm.domain.Job" resultType="int">
+        select count(1) from t_job where 1=1 
+        <include refid="where" />
+    </select>
+   
+    <insert id="save" parameterType="com.ssm.domain.ConsignSyncLog" >
+        insert into t_job (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{groupName,jdbcType=VARCHAR},
+        #{cronExpression,jdbcType=VARCHAR},
+        #{jobClass,jdbcType=VARCHAR},
+        #{jobParam,jdbcType=VARCHAR},
+        #{runningIp,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR},
+        #{createBy,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateBy,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{enabledFlag,jdbcType=CHAR},
+        #{grade,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="remove" parameterType="java.lang.String" >
+        delete from t_job
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+  <update id="update" parameterType="com.ssm.domain.Job" >
+    update t_job
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null" >
+        cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="jobClass != null" >
+        job_class = #{jobClass,jdbcType=VARCHAR},
+      </if>
+      <if test="jobParam != null" >
+        job_param = #{jobParam,jdbcType=VARCHAR},
+      </if>
+      <if test="runningIp != null" >
+        running_ip = #{runningIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enabledFlag != null" >
+        enabled_flag = #{enabledFlag,jdbcType=CHAR},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <!-- 
+    	CONCAT(CONCAT('%', #{myIp,jdbcType=VARCHAR}),'%')
+     -->
+    <select id="getListByIplist" parameterType="java.util.Map" resultMap="sysmgtJobMapper">
+        select * from t_job where 1=1 
+        <if test="enabledFlag != null and enabledFlag != ''" >
+	        AND enabled_flag = #{enabledFlag,jdbcType=CHAR}
+	    </if>
+	    <if test="ipList!=null and ipList.size() > 0">
+            AND
+            (
+            	<foreach collection="ipList" item="myIp" index="index" separator=" or ">
+	                running_ip = #{myIp,jdbcType=VARCHAR}
+	            </foreach>
+            )
+       </if>
+    </select>
+</mapper>

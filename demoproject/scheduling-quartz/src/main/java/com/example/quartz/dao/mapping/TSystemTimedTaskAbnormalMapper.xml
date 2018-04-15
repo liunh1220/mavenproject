@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.quartz.dao.TSystemTimedTaskAbnormalMapper" >
+  <resultMap id="BaseResultMap" type="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    <id column="abnm_id" property="abnmId" jdbcType="VARCHAR" />
+    <result column="job_id" property="jobId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.example.quartz.entity.TSystemTimedTaskAbnormal" extends="BaseResultMap" >
+    <result column="abnm_content" property="abnmContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    abnm_id, job_id, create_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    abnm_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_system_timed_task_abnormal
+    where abnm_id = #{abnmId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_system_timed_task_abnormal
+    where abnm_id = #{abnmId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    insert into t_system_timed_task_abnormal (abnm_id, job_id, create_time, 
+      abnm_content)
+    values (#{abnmId,jdbcType=VARCHAR}, #{jobId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{abnmContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    insert into t_system_timed_task_abnormal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="abnmId != null" >
+        abnm_id,
+      </if>
+      <if test="jobId != null" >
+        job_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="abnmContent != null" >
+        abnm_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="abnmId != null" >
+        #{abnmId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null" >
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="abnmContent != null" >
+        #{abnmContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    update t_system_timed_task_abnormal
+    <set >
+      <if test="jobId != null" >
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="abnmContent != null" >
+        abnm_content = #{abnmContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where abnm_id = #{abnmId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    update t_system_timed_task_abnormal
+    set job_id = #{jobId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      abnm_content = #{abnmContent,jdbcType=LONGVARCHAR}
+    where abnm_id = #{abnmId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    update t_system_timed_task_abnormal
+    set job_id = #{jobId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where abnm_id = #{abnmId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="fineList" resultMap="BaseResultMap" 
+    parameterType="com.example.quartz.entity.TSystemTimedTaskAbnormal" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_system_timed_task_abnormal
+    <where> 1=1 
+       <if test="abnmId != null" >
+        and abnm_id = #{abnmId,jdbcType=VARCHAR}
+      </if>
+       <if test="jobId != null" >
+        and job_id = #{jobId,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="abnmContent != null" >
+        and abnm_content = #{abnmContent,jdbcType=LONGVARCHAR}
+      </if>   
+      order by create_time desc
+    </where>
+      </select>
+</mapper>

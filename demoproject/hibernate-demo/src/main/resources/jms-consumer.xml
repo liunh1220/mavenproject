@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd">
+
+    <rabbit:listener-container connection-factory="listenerConnectionFactory" acknowledge="auto" concurrency="${jms.taobao.order.concurrency}">
+        <rabbit:listener queues="orderRequestQueue.v2" ref="orderHandler" method="onMessage"/>
+        <rabbit:listener queues="vipreturnRequestQueue.v2" ref="vipReturnHandler" method="onMessage"/>
+        <rabbit:listener queues="vipActualStorageRequestQueue.v2" ref="vipActualStorageHandler" method="onMessage"/>
+        <rabbit:listener queues="jitOrderRequestQueue.v2" ref="jitOrderHandler" method="onMessage"/>
+        <rabbit:listener queues="chainOrderRequestQueue.v2" ref="orderHandler" method="onMessage"/>
+    	<rabbit:listener queues="jitPromotionRequestQueue.v2" ref="jitPromotionHandler" method="onMessage"/>
+    </rabbit:listener-container>
+    
+    <rabbit:listener-container connection-factory="listenerConnectionFactory" acknowledge="auto">
+        <rabbit:listener queues="jitScheduleRequestQueue.v2" ref="jitScheduleHandler" method="onMessage"/>
+        <rabbit:listener queues="jitPoRequestQueue.v2" ref="jitPoHandler" method="onMessage"/>
+        <rabbit:listener queues="jitOmniOrderRequestQueue.v2" ref="jitOmniOrderHandler" method="onMessage"/>
+        <rabbit:listener queues="jitCancelledOrderRequestQueue.v2" ref="jitCancelledOrderHandler" method="onMessage"/>
+        <rabbit:listener queues="jitOccupiedOrderRequestQueue.v2" ref="jitOccupiedOrderHandler" method="onMessage"/>
+        <rabbit:listener queues="refundRequestQueue.v2" ref="refundHandler" method="onMessage"/>
+        <rabbit:listener queues="fenxiaoScitemRequestQueue.v2" ref="taobaoScitemHandler" method="onMessage"/>
+        <rabbit:listener queues="taobaoInventoryQueue.v2" ref="taobaoSkuCheckHandler" method="onMessage"/>
+        <rabbit:listener queues="wlbOrderRequestQueue.v2" ref="wlbOrderHandler" method="onMessage"/>
+        <rabbit:listener queues="chainREOrdersRequestQueue.v2" ref="chainReturnExchangeOrdersHandler" method="onMessage"/>
+        <rabbit:listener queues="chainSkuRequestQueue.v2" ref="chainSkuHandler" method="onMessage"/>
+        <rabbit:listener queues="invoiceRequestQueue.v2" ref="orderInvoiceHandler" method="onMessage"/>
+        <rabbit:listener queues="publicRequestQueue.v2" ref="jmsMessageListener" method="onMessage" />
+        <rabbit:listener queues="taobaoSkuRequestQueue.v2" ref="taobaoSkuUploadHandler" method="onMessage"/>
+       <rabbit:listener queues="workOrderRequestQueue.v2" ref="workOrderUploadHandler" method="onMessage"/>
+       <rabbit:listener queues="workOrder2WOSRequestQueue.v2" ref="workOrder2WOSUploadHandler" method="onMessage"/>
+       <rabbit:listener queues="refundOrderRequestQueue.v2" ref="refundOrderHandler" method="onMessage"/>
+    </rabbit:listener-container>
+	
+	<bean id="messageDispatcher" class="com.belle.infrastructure.jms.MessageDispatcher">
+		<property name="handlerMap">
+			<map>
+				<entry key="chainCommodityType" value-ref="publicHandler"></entry>
+				<entry key="taobaoPromtResType" value-ref="taobaoPromtResHandler"></entry>
+				<entry key="TradeAccountType" value-ref="tradeAccoutRecordHandler"></entry>
+				<entry key="taobaoSellerAddType" value-ref="taobaoSellerAddHandler"></entry>
+				<entry key="taobaoSellerEditType" value-ref="taobaoSellerEditHandler"></entry>
+				<entry key="chainSellerAddType" value-ref="chainSellerAddHandler"></entry>
+				<entry key="chainSellerEditType" value-ref="chainSellerEditHandler"></entry>
+				<entry key="chainSellerRemoveType" value-ref="chainSellerRemoveHandler"></entry>
+			</map>
+		</property>
+	</bean> 
+	
+</beans>

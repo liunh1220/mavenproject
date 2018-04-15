@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<description>Spring公共配置</description>
+	
+    <!-- 引.properties属性文件 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+           <list>
+               <value>classpath:config/jdbc.properties</value>    
+               <!-- <value>classpath:config/log4j.properties</value>     -->
+           </list>
+       </property>        
+    </bean>
+    
+	<!--开启注解-->
+	<context:annotation-config />
+	<context:component-scan base-package="com.example">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+	</context:component-scan>
+	
+	<bean class="com.example.ehcache.util.ApplicationContextUtil"/>
+	
+	<import resource="classpath:applicationContext-hibernate.xml" />
+	<import resource="classpath:applicationContext-ehcache.xml" />
+    
+</beans>

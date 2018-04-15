@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd">
+
+	<description>Spring公共配置</description>
+    
+	<!-- c3p0 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass"><value>${jdbc.driverClassName}</value></property>
+		<property name="jdbcUrl"><value>${jdbc.url}</value></property>
+		<property name="user" ><value>${jdbc.username}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+		<property name="minPoolSize"><value>${jdbc.c3p0.minPoolSize}</value></property>
+		<property name="maxPoolSize"><value>${jdbc.c3p0.maxPoolSize}</value></property>
+		<property name="initialPoolSize"><value>${jdbc.c3p0.initialPoolSize}</value></property>
+		<property name="maxIdleTime"><value>${jdbc.c3p0.maxIdleTime}</value></property>
+		<property name="acquireIncrement"><value>${jdbc.c3p0.acquireIncrement}</value></property>
+		<property name="idleConnectionTestPeriod"><value>${jdbc.c3p0.idleConnectionTestPeriod}</value></property>
+		<property name="acquireRetryAttempts"><value>${jdbc.c3p0.acquireRetryAttempts}</value></property>
+		<property name="numHelperThreads"><value>${jdbc.c3p0.numHelperThreads}</value></property>
+		<property name="acquireRetryDelay"><value>${jdbc.c3p0.acquireRetryDelay}</value></property>
+		<property name="propertyCycle"><value>${jdbc.c3p0.propertyCycle}</value></property>
+		<property name="checkoutTimeout"><value>${jdbc.c3p0.checkoutTimeout}</value></property>
+	</bean>
+
+	<!-- Hibernate配置 -->
+	<bean id="sessionFactory" name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" >
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop> 
+				<prop key="hibernate.cache.provider_class">org.springframework.cache.ehcache.EhCacheCacheManager</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.batch_size}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="query.substitutions">${hibernate.query.substitutions}</prop>
+				<prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>
+				<prop key="hibernate.search.autoregister_listeners">${hibernate.search.autoregister_listeners}</prop>
+				<prop key="hibernate.physical_naming_strategy">${hibernate.physical_naming_strategy}</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list> 
+				<value>com.example.hibernate.entity.pojo</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+	    <property name="sessionFactory" ref="sessionFactory"/>
+	    <property name="cacheQueries" value="true"/>
+	</bean>
+
+	<bean id="transactionManager" name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	 <!-- 配置事务异常封装 -->
+    <bean id="persistenceExceptionTranslationPostProcessor"
+        class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+    <!-- 事务切面  -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="append*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="modify*" propagation="REQUIRED" />
+            <tx:method name="edit*" propagation="REQUIRED" />
+            <tx:method name="del*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="remove*" propagation="REQUIRED" />
+            <tx:method name="repair" propagation="REQUIRED" />
+            <tx:method name="delAndRepair" propagation="REQUIRED" />
+            <tx:method name="get*" propagation="SUPPORTS" />
+            <tx:method name="find*" propagation="SUPPORTS" />
+            <tx:method name="load*" propagation="SUPPORTS" />
+            <tx:method name="cout*" propagation="SUPPORTS" />
+            <tx:method name="is*" propagation="SUPPORTS" />
+            <tx:method name="list*" propagation="SUPPORTS" />
+            <tx:method name="search*" propagation="SUPPORTS" />
+            <tx:method name="datagrid*" propagation="SUPPORTS" />
+			<tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 事务AOP -->
+	<aop:config proxy-target-class="true">
+		<!-- <aop:advisor pointcut="(execution(* com.example.hibernate.service.*.*(..))) or execution(* com.example.hibernate.service.*.*.*(..))" advice-ref="txAdvice" /> -->
+		<aop:advisor pointcut="(execution(* com.example.hibernate.dao.*.*.*(..))) or execution(* com.example.hibernate.dao.*.*(..))" advice-ref="txAdvice" />
+	</aop:config>
+	
+ 
+</beans>

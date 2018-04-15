@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.NotificationMapper" >
+    
+    <cache/>
+    
+    <resultMap id="resultMapNotificationMapper" type="com.ssm.domain.Notification" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        
+        <result column="type" property="type" jdbcType="VARCHAR" />
+        
+        <result column="to_emails" property="toEmails" jdbcType="VARCHAR" />
+        
+        <result column="content" property="content" jdbcType="CLOB" />
+        
+        <result column="is_realtime" property="isRealtime" jdbcType="CHAR" />
+        
+        <result column="is_sead" property="isSend" jdbcType="CHAR" />
+        
+        <result column="sead_time" property="sendTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        title,
+        type,
+        to_emails,
+        content,
+        is_realtime,
+        is_sead,
+        sead_time
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="title!=null and title!=''">
+        and title like '%${title}%'
+        </if>
+        <if test="type!=null and type!=''">
+        and type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="toEmails!=null and toEmails!=''">
+        and to_emails = #{toEmails,jdbcType=VARCHAR}
+        </if>
+        <if test="content!=null and content!=''">
+        and content like '%${content}%'
+        </if>
+        <if test="isRealtime!=null and isRealtime!=''">
+        and is_realtime = #{isRealtime,jdbcType=CHAR}
+        </if>
+        <if test="isSend!=null and isSend!=''">
+        and is_sead = #{isSend,jdbcType=CHAR}
+        </if>
+        <if test="sendTime!=null and sendTime!=''">
+        and sead_time = #{sendTime,jdbcType=TIMESTAMP}
+        </if>
+    </sql>
+    
+    <select id="getById" resultMap="resultMapNotificationMapper" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from t_notification
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.ssm.domain.Notification" resultMap="resultMapNotificationMapper">
+        select * from t_notification where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPage" parameterType="com.ssm.domain.Notification" resultMap="resultMapNotificationMapper">
+        select * from t_notification where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.ssm.domain.Notification" resultType="int">
+        select count(1) from t_notification where 1=1 
+        <include refid="where" />
+    </select>
+   
+    <insert id="save" parameterType="com.ssm.domain.ConsignSyncLog" >
+        insert into t_notification (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{type,jdbcType=VARCHAR},
+        #{toEmails,jdbcType=VARCHAR},
+        #{content,jdbcType=CLOB},
+        #{isRealtime,jdbcType=CHAR},
+        #{isSend,jdbcType=CHAR},
+        #{sendTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    
+    <delete id="remove" parameterType="java.lang.String" >
+        delete from t_notification
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <update id="update" parameterType="com.ssm.domain.Notification" >
+        update t_notification
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="toEmails != null" >
+                to_emails = #{toEmails,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=CLOB},
+            </if>
+            <if test="isRealtime != null" >
+                is_realtime = #{isRealtime,jdbcType=CHAR},
+            </if>
+            <if test="isSend != null" >
+                is_sead = #{isSend,jdbcType=CHAR},
+            </if>
+            <if test="sendTime != null" >
+                sead_time = #{sendTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

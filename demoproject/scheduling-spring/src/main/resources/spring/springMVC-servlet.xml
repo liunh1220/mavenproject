@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+	
+	<!-- 对静态资源文件的访问 不支持访问WEB-INF目录 -->  
+	<mvc:default-servlet-handler/>
+	<!-- 对静态资源文件的访问 支持访问WEB-INF目录 -->
+    <!-- <mvc:resources location="/images/" mapping="/images/**"/>
+    <mvc:resources location="/js/" mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/> 
+    <mvc:resources location="/file/" mapping="/file/**"/>  -->
+     
+    <!-- 默认访问跳转到登录页面(即定义无需Controller的url<->view直接映射) -->  
+    <mvc:view-controller path="/" view-name="forward:/login.jsp"/>  
+    
+	<!-- springMVC返回JSON数据,所支持的RESTFul风格 -->
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	<!-- StringHttpMessageConverte用来处理json数据转换,属性supportedMediaTypes处理返回的json数据的编码,默认是ISO-88859-1 -->
+	<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/plain;charset=utf-8</value>
+			</list>
+		</property>
+	</bean> 
+	<bean id="byteArray_hmc" class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+    <bean id="resource_hmc" class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+    <bean id="source_hmc" class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+    <bean id="xmlAwareForm_hmc" class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter" />
+    <bean id="jaxb2RootElement_hmc" class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
+    	
+    <!-- 用到包为jackson-annotations-2.5.0.jar，jackson-core-2.5.0.jar，jackson-databind-2.5.0.jar,spring MVC处理json数据时，所必须的jar依赖 -->
+ 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			  	<ref bean="stringHttpMessageConverter" /> 
+			  	<ref bean="byteArray_hmc" />  
+                <ref bean="resource_hmc" />  
+                <ref bean="source_hmc" />  
+                <ref bean="xmlAwareForm_hmc" />  
+                <ref bean="jaxb2RootElement_hmc" />  
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 开启注解 --> 
+	<!-- <context:annotation-config/>是对包进行扫描，实现注释驱动Bean定义，
+	同时将bean自动注入容器中使用。即解决了@Controller标识的类的bean的注入和使用。 -->
+    <context:annotation-config />
+    <!-- 注解扫描service层 -->  
+    <context:component-scan base-package="com.example.springquartz.controller,com.example.springquartz.dao,com.example.springquartz.service">  
+	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />  
+	    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />  
+	</context:component-scan>
+
+	<!-- <mvc:annotation-driven>自动加载RequestMappingHandlerMapping和RequestMappingHandlerAdapter，
+	可用在springmvc.xml配置文件中使用<mvc:annotation-driven>替代注解处理器和适配器的配置。 -->
+	<mvc:annotation-driven conversion-service="conversionService" validator="validator"></mvc:annotation-driven>
+	<!-- 自定义参数绑定 -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- 转换器 -->
+		<property name="converters">
+			<list>
+				<!-- 日期类型转换 -->
+				<bean class="com.example.quartz.controller.CustomDateConverter"/>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 校验错误信息配置文件 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<!-- 资源文件名-->
+		<property name="basenames">   
+       	   <list>    
+              <value>classpath:CustomValidationMessages.properties</value> 
+       	   </list>   
+    	</property>
+		<!-- 资源文件编码格式 -->
+		<property name="fileEncodings" value="UTF-8" />
+		<!-- 对资源文件内容缓存时间，单位秒 -->
+		<property name="cacheSeconds" value="120" />
+	</bean>
+	<!-- 校验器 -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<!-- hibernate校验器-->
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下的ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	
+    <!-- 处理器适配器 单url映射-->
+    <!-- <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/> -->
+    <!-- 注解式处理器适配器，对标记@ResquestMapping的方法进行适配。 -->
+    <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/> -->
+    <!-- 用于页面跳转,根据请求的不同跳转到不同页面，如请求index.do则跳转到/WEB-INF/jsp/index.jsp -->  
+    <!-- <bean id="findJsp" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />  
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">  
+        <property name="mappings">  
+            <props>  
+                <prop key="index.do">findJsp</prop>表示index.do转向index.jsp页面  
+                <prop key="first.do">findJsp</prop>表示first.do转向first.jsp页面  
+            </props>  
+        </property>  
+    </bean> --> 
+	
+	<!-- 如果使用了<mvc:annotation-driven />， 它会自动注册DefaultAnnotationHandlerMapping 与AnnotationMethodHandlerAdapter 
+          这两个bean,所以就没有机会再给它注入interceptors属性，就无法指定拦截器。当然我们可以通过人工配置interceptor Bean，不使用 <mvc:annotation-driven />，
+          就可以给 interceptors 属性注入拦截器了。 -->
+	<!-- 
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" >
+		<property name="interceptors">     
+		     <list>     
+		         <bean class="com.mvc.MyInteceptor"></bean>    
+		     </list>     
+		 </property> 
+	</bean>
+	-->
+	
+    <!-- 拦截器 要拦截的路径<mvc:mapping path="/user/**" />,不拦截的路径<mvc:exclude-mapping path="/login/**"/> -->
+    <!-- <mvc:interceptors>    
+	    <mvc:interceptor> 
+	        <mvc:mapping path="/user/**" />  
+	        <bean class="com.dimeng.p2p.interceptor.MyInterceptor">
+	        	<property name="loginController">  
+                    <value>../login.do</value>  
+                </property>  
+	        </bean>    
+	    </mvc:interceptor>  
+	</mvc:interceptors>
+	-->
+	
+	<!-- 配置视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="viewClass"  
+            value="org.springframework.web.servlet.view.JstlView" />  
+        <property name="prefix" value="/WEB-INF/page/" />  
+        <property name="suffix" value=".jsp" />  
+    </bean> 
+	
+	<!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	 <property name="defaultEncoding" value="utf-8" />  
+         <property name="maxUploadSize" value="10485760000" />  
+         <property name="maxInMemorySize" value="40960" /> 
+    </bean>  
+    
+    <!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
+    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->  
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="exceptionMappings">  
+            <props>  
+                <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/error_fileupload.jsp页面 -->  
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">WEB-INF/error_fileupload</prop>  
+                <!-- 处理其它异常(包括Controller抛出的) -->  
+                <prop key="java.lang.Throwable">WEB-INF/500</prop>  
+            </props>  
+        </property>  
+    </bean>
+    
+</beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+           http://www.springframework.org/schema/tx  
+           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 开启注解配置 -->
+	<context:annotation-config />
+	<!-- 扫描service层 -->
+	<context:component-scan base-package="com.example.quartz">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- 开启事务注解驱动 -->
+	<tx:annotation-driven />
+	
+    <bean class="org.quartz.impl.StdSchedulerFactory"/>
+
+	 <!-- 调度器 -->
+    <bean name="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> 
+       <!-- 通过applicationContextSchedulerContextKey属性配置spring上下文 -->    
+        <property name="applicationContextSchedulerContextKey">    
+            <value>applicationContext</value>    
+        </property>
+        <!-- <property name="dataSource" ref="dataSource"/>
+    	<property name="overwriteExistingJobs" value="true"/>  
+    	<property name="configLocation" value="classpath:quartz.properties"/>  -->
+    </bean>  
+    
+</beans>

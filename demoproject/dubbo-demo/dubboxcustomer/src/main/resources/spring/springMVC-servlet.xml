@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+			http://www.springframework.org/schema/util
+			http://www.springframework.org/schema/util/spring-util-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd 
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <context:component-scan base-package="com.dimeng">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/> 
+	</context:component-scan>
+	<mvc:annotation-driven />
+	<mvc:resources mapping="/js/**" location="/js/**"/>  
+    <mvc:resources mapping="/css/**" location="/css/**"/>  
+    <mvc:resources mapping="/images/**" location="/images/**"/>  
+    <mvc:resources mapping="/fonts/**" location="/fonts/**"/>  
+    <mvc:resources mapping="/myfonts/**" location="/myfonts/**"/>  
+    <mvc:default-servlet-handler />
+    <!-- 启动对@AspectJ注解的支持 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <mvc:interceptors>
+	   	<mvc:interceptor >
+	            <!-- 一级目录 -->
+				<mvc:mapping path="/*.do" />
+				<!-- 二级目录 -->
+				<mvc:mapping path="/*/*.do" />
+				<!-- 三级目录 -->
+				<mvc:mapping path="/*/*/*.do" />
+				<!-- 不需拦截的地址 -->
+				<mvc:exclude-mapping path="/"/> 
+				<bean class="com.demo.console.interceptor.ConsoleAvoidDuplicateSubmissionInterceptor"></bean>
+	   	</mvc:interceptor>
+    </mvc:interceptors>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	 	<property name="order" value="1" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	 <!-- 上传拦截，如最大上传值及最小上传值 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <!-- one of the properties available; the maximum file size in bytes -->  
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="209715200"/> 
+        <property name="uploadTempDir" value="temp"/>
+    </bean> 
+     <!-- 上传拦截，如最大上传值及最小上传值
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+        <property name="exceptionMappings"> 
+            <props> -->  
+                <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/jsp/error_fileupload.jsp页面 
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error_fileupload.json</prop>
+                -->  
+           <!--  </props> 
+        </property> 
+    </bean> -->  
+	<!-- 处理JSON请求 -->
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="2" />
+        <!-- 如果接口全是以json格式来处理的，可以放在这个
+        <property name="defaultContentType" value="application/json;charset=UTF-8"/>
+        -->
+        <!-- <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html"/>
+                <entry key="json" value="application/json" />
+                <entry key="xml" value="application/xml" />
+                <entry key="jsonp" value="application/javascript"/>  
+            </map>
+        </property> -->
+        
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" ></bean>
+            </list>
+        </property>
+        <!-- <property name="ignoreAcceptHeader" value="true" />  -->
+    </bean>
+		
+    <!-- 异常处理 -->
+	<bean id="exceptionHandler" class="com.demo.console.exception.ConsoleExceptionHandler"></bean>
+	
+</beans>

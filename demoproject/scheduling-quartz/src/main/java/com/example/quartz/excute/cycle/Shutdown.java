@@ -1,0 +1,1 @@
+package com.example.quartz.excute.cycle;public abstract interface Shutdown {    public abstract void onShutdown();}

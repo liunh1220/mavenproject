@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.quartz.dao.TSystemTimedTaskManageMapper" >
+  <resultMap id="BaseResultMap" type="com.example.quartz.entity.TSystemTimedTaskManage" >
+    <id column="job_id" property="jobId" jdbcType="VARCHAR" />
+    <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+    <result column="execution_clazz" property="executionClazz" jdbcType="VARCHAR" />
+    <result column="execution_mathod" property="executionMathod" jdbcType="VARCHAR" />
+    <result column="execution_time" property="executionTime" jdbcType="VARCHAR" />
+    <result column="enabled_status" property="enabledStatus" jdbcType="CHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="extend_param" property="extendParam" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    job_id, job_name, execution_clazz, execution_mathod, execution_time, enabled_status, 
+    start_time, end_time, create_time, extend_param, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_system_timed_task_manage
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </select>
+  <select id="isExistTimedTask" resultType="java.lang.Integer" parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    select count(*)
+    from t_system_timed_task_manage
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_system_timed_task_manage
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    insert into t_system_timed_task_manage (job_id, job_name, execution_clazz, 
+      execution_mathod, execution_time, enabled_status, 
+      start_time, end_time, create_time, 
+      extend_param, remark)
+    values (#{jobId,jdbcType=VARCHAR}, #{jobName,jdbcType=VARCHAR}, #{executionClazz,jdbcType=VARCHAR}, 
+      #{executionMathod,jdbcType=VARCHAR}, #{executionTime,jdbcType=VARCHAR}, #{enabledStatus,jdbcType=CHAR}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{extendParam,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    insert into t_system_timed_task_manage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="jobId != null" >
+        job_id,
+      </if>
+      <if test="jobName != null" >
+        job_name,
+      </if>
+      <if test="executionClazz != null" >
+        execution_clazz,
+      </if>
+      <if test="executionMathod != null" >
+        execution_mathod,
+      </if>
+      <if test="executionTime != null" >
+        execution_time,
+      </if>
+      <if test="enabledStatus != null" >
+        enabled_status,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="extendParam != null" >
+        extend_param,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="jobId != null" >
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null" >
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="executionClazz != null" >
+        #{executionClazz,jdbcType=VARCHAR},
+      </if>
+      <if test="executionMathod != null" >
+        #{executionMathod,jdbcType=VARCHAR},
+      </if>
+      <if test="executionTime != null" >
+        #{executionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledStatus != null" >
+        #{enabledStatus,jdbcType=CHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extendParam != null" >
+        #{extendParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    update t_system_timed_task_manage
+    <set >
+      <if test="jobName != null" >
+        job_name = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="executionClazz != null" >
+        execution_clazz = #{executionClazz,jdbcType=VARCHAR},
+      </if>
+      <if test="executionMathod != null" >
+        execution_mathod = #{executionMathod,jdbcType=VARCHAR},
+      </if>
+      <if test="executionTime != null" >
+        execution_time = #{executionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledStatus != null" >
+        enabled_status = #{enabledStatus,jdbcType=CHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extendParam != null" >
+        extend_param = #{extendParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    update t_system_timed_task_manage
+    set job_name = #{jobName,jdbcType=VARCHAR},
+      execution_clazz = #{executionClazz,jdbcType=VARCHAR},
+      execution_mathod = #{executionMathod,jdbcType=VARCHAR},
+      execution_time = #{executionTime,jdbcType=VARCHAR},
+      enabled_status = #{enabledStatus,jdbcType=CHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      extend_param = #{extendParam,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="fineList" resultMap="BaseResultMap" 
+      parameterType="com.example.quartz.entity.TSystemTimedTaskManage" >
+    select job_id, 
+           job_name, 
+           execution_clazz, 
+           execution_mathod, 
+           execution_time, 
+           enabled_status, 
+           date_format(start_time,'%Y-%m-%d %T') as strStartTime,
+           date_format(end_time,'%Y-%m-%d %T') as strEndTime, 
+           DATE_FORMAT(create_time,'%Y-%m-%d %T') as strCreateTime, 
+           extend_param, 
+           description
+    from t_system_timed_task_manage
+    <where> 1=1
+      <if test="jobId != null " >
+        and job_id = #{jobId,jdbcType=VARCHAR}
+      </if>
+      <if test="jobName != null and  jobName != '' " >
+        and job_name LIKE CONCAT('%',#{jobName,jdbcType=VARCHAR},'%') 
+      </if>
+      <if test="executionClazz != null" >
+        and execution_clazz = #{executionClazz,jdbcType=VARCHAR}
+      </if>
+      <if test="executionMathod != null" >
+        and execution_mathod = #{executionMathod,jdbcType=VARCHAR}
+      </if>
+      <if test="executionTime != null" >
+        and execution_time = #{executionTime,jdbcType=VARCHAR}
+      </if>
+      <if test="enabledStatus != null" >
+        and enabled_status = #{enabledStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="startTime != null" >
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime != null" >
+        and end_time = #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="extendParam != null" >
+        and extend_param = #{extendParam,jdbcType=VARCHAR}
+      </if>
+      <if test="description != null" >
+        and description = #{description,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+  
+  
+</mapper>

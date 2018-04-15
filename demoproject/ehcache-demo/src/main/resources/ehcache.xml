@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+	<diskStore path="java.io.tmpdir" />
+	 <!--
+                 默认设置
+        maxElementsInMemory : 在內存中最大緩存的对象数量。
+        eternal : 缓存的对象是否永远不变。
+        timeToIdleSeconds ：可以操作对象的时间。
+        timeToLiveSeconds ：缓存中对象的生命周期，时间到后查询数据会从数据库中读取。
+        overflowToDisk ：内存满了，是否要缓存到硬盘。
+    -->
+	<!-- DefaultCache setting. -->
+	<defaultCache maxElementsInMemory="10000" 
+		memoryStoreEvictionPolicy="LRU" 
+		eternal="false"
+		timeToIdleSeconds="300" 
+		timeToLiveSeconds="300" 
+		overflowToDisk="false" 
+		diskPersistent="false" />
+
+    <!--想使用查询缓存，这两个类需要添加-->
+    <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="true" />
+    <cache name="org.hibernate.cache.internal.StandardQueryCache"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToLiveSeconds="120"
+           overflowToDisk="true" />
+           
+	<cache name="com.example.ehcache.entity.pojo.SystemConfig" 
+		overflowToDisk="false" 
+		eternal="false"
+		diskPersistent="false" 
+		timeToLiveSeconds="3600" 
+		timeToIdleSeconds="3600" 
+		maxElementsInMemory="10000" 
+		memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="consoleCache"
+           maxEntriesLocalHeap="10000"
+           maxEntriesLocalDisk="1000"
+           eternal="false"
+           diskSpoolBufferSizeMB="30"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+        <persistence strategy="localTempSwap"/>
+    </cache>
+	<cache name="frontCache"
+           maxEntriesLocalHeap="10000"
+           maxEntriesLocalDisk="1000"
+           eternal="false"
+           diskSpoolBufferSizeMB="30"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+        <persistence strategy="localTempSwap"/>
+    </cache>
+		
+</ehcache>

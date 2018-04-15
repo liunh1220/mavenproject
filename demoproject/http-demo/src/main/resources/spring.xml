@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd    
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 开启注解  -->
+	<context:annotation-config />
+	<!-- 开启自动切面代理 -->
+	<aop:aspectj-autoproxy />
+	
+    <!-- 引.properties属性文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+           <list>
+               <value>classpath:jdbc.properties</value>    
+               <value>classpath:log4j.properties</value>    
+           </list>
+       </property>        
+    </bean>
+    <!-- 自动扫描(自动注入)，扫描me.gacl.service这个包以及它的子包的所有使用@Service注解标注的类 -->
+    <context:component-scan base-package="com.example">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+	</context:component-scan>
+    
+	<import resource="classpath:spring-mybatis.xml" />
+    
+</beans>

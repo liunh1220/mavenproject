@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>mavenproject</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  
+  <dependencies>
+    
+	<!-- <dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.12</version>
+	    <scope>test</scope>
+	</dependency> -->
+
+	
+	<!-- <dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-clean-plugin</artifactId>
+	    <version>3.0.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-compiler-plugin</artifactId>
+	    <version>3.7.0</version>
+	</dependency> -->
+	<!-- <dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-resources-plugin</artifactId>
+	    <version>3.0.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <version>3.0.1</version>
+	</dependency> -->
+
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>servlet-api</artifactId>
+	    <version>2.5</version>
+	    <scope>provided</scope>
+	</dependency>
+	<!-- <dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>javax.servlet-api</artifactId>
+		<version>3.1.0</version>
+		<scope>provided</scope>
+	</dependency> -->
+	
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.5</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.5</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-beanutils</groupId>
+		<artifactId>commons-beanutils</artifactId>
+		<version>1.8.3</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-collections</groupId>
+		<artifactId>commons-collections</artifactId>
+		<version>3.2.2</version>
+	</dependency>
+	
+	<!-- <dependency>
+	    <groupId>log4j</groupId>
+	    <artifactId>log4j</artifactId>
+	    <version>1.2.17</version>
+	</dependency> -->
+	<!-- <dependency>
+	    <groupId>commons-logging</groupId>
+	    <artifactId>commons-logging</artifactId>
+	    <version>1.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-api</artifactId>
+	    <version>2.8.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-core</artifactId>
+	    <version>2.8.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>1.8.0-alpha2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-log4j12</artifactId>
+	    <version>1.8.0-alpha2</version>
+	    <scope>test</scope>
+	</dependency> -->
+    
+  </dependencies>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   	<myproject.version>1.0</myproject.version>
+	<spring.version>5.0.1.RELEASE</spring.version>
+	<spring-security.version>4.2.3.RELEASE</spring-security.version>
+	<spring-data-redis.version>2.0.1.RELEASE</spring-data-redis.version>
+	<spring-batch.version>3.0.8.RELEASE</spring-batch.version>
+	<redis.version>2.9.0</redis.version>
+	<junit.version>4.12</junit.version>
+	<spring-asm.version>3.1.4.RELEASE</spring-asm.version>
+	<servlet.version>3.1.0</servlet.version>
+	<hibernate-validator.version>6.0.2.Final</hibernate-validator.version>	    
+	<hibernate.version>6.0.2.Final</hibernate.version>   
+	<validation-api.version>1.1.0.Final</validation-api.version>   
+	<druid.version>1.0.29</druid.version>
+	<mybatis.version>3.4.2</mybatis.version>
+	<mybatis-spring.version>1.3.1</mybatis-spring.version>
+	<ehcache.version>2.10.2</ehcache.version>	
+	<shiro.version>1.4.0</shiro.version>
+	<memcache.version>3.0.1</memcache.version>		
+	<log4j.version>1.2.17</log4j.version>
+	<log4j-core.version>2.7</log4j-core.version>
+	<log4j-api.version>2.7</log4j-api.version>
+	<log4j-web.version>2.7</log4j-web.version>
+	<dom4j.version>1.6</dom4j.version>
+	<slf4j.version>2.6.1</slf4j.version>
+    <httpclient.version>4.5.1</httpclient.version>
+	<commons-lang3.version>3.5</commons-lang3.version>
+	<commons-lang.version>2.6</commons-lang.version>
+	<commons-io.version>2.5</commons-io.version>
+	<commons-codec.version>1.10</commons-codec.version>
+	<commons-fileupload.version>1.3.2</commons-fileupload.version>
+	<commons-beanutils.version>1.9.3</commons-beanutils.version>
+	<commons-dbcp.version>1.4</commons-dbcp.version>
+	<commons-pool.version>1.6</commons-pool.version>
+	<commons-pool2.version>2.4.2</commons-pool2.version>
+	<commons-net.version>3.5</commons-net.version>
+	<commons-discovery.version>0.2</commons-discovery.version>
+	<commons-digester.version>2.1</commons-digester.version>
+	<commons-logging.version>1.1.1</commons-logging.version>
+    
+    <fastjson.version>1.2.39</fastjson.version>
+    <jsonlib.version>2.4</jsonlib.version> 
+    <ezmorph.version>1.0.5</ezmorph.version> 
+    <morph.version>1.1.1</morph.version> 
+    
+    <aspectj.version>1.8.9</aspectj.version>
+    <batik-transcoder.version>1.7</batik-transcoder.version>
+    <javax.mail.version>1.5.4</javax.mail.version>
+	<xstream.version>1.4.3</xstream.version>
+	
+	<guava.version>22.0</guava.version>
+	<gson.version>2.8.1</gson.version>
+	
+	<poi.version>3.9</poi.version>
+	<javamail.version>1.5.6</javamail.version>
+	<mysql.driver.version>6.0.6</mysql.driver.version>
+	<jdk.version>1.7</jdk.version>
+	<freemarker.version>2.3.25-incubating</freemarker.version>
+	<fasterxml.jackson.version>2.7.4</fasterxml.jackson.version>
+	<quartz.version>2.2.3</quartz.version>
+	<downloadSources>false</downloadSources>
+	<javaee-api.version>7.0</javaee-api.version>
+	<asm.version>3.3.1</asm.version>
+	<taglibs.version>1.1.2</taglibs.version>
+	<jstl.version>1.2</jstl.version>
+	<jsp.api.version>2.1</jsp.api.version>
+	<tiles.version>3.0.5</tiles.version>
+	<cglib.version>3.0</cglib.version>
+	<bcprov-jdk16.version>1.46</bcprov-jdk16.version>
+	<bcprov-jdk15on.version>1.54</bcprov-jdk15on.version>
+	<zookeeper.version>3.4.6</zookeeper.version>
+	<zookeeper.zkclient.version>0.9</zookeeper.zkclient.version>
+	<jedis.version>2.9.0</jedis.version>
+	<dubbo.version>2.5.3</dubbo.version>
+	<kryo.version>2.24.0</kryo.version>
+	<kryo-serializers.version>0.38</kryo-serializers.version>
+	<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+	<kaptcha.version>2.3.2</kaptcha.version>
+	<rocketmq-client.version>3.6.2.Final</rocketmq-client.version>
+	<rocketmq-all.version>3.6.2.Final</rocketmq-all.version>
+	<activemq-client.version>5.14.3</activemq-client.version>
+	<activemq-all.version>5.14.3</activemq-all.version>
+	<joda-time.version>2.3</joda-time.version>
+	<testng.version>6.9.4</testng.version>
+	<mockito.version>1.10.19</mockito.version>
+	<h2.version>1.4.187</h2.version>
+	<dbunit.version>2.2</dbunit.version>
+	<cxf.version>2.7.18</cxf.version>
+	<commons-httpclient.version>3.1</commons-httpclient.version>
+  </properties>
+
+ <!-- 自动部署构件到Nexus仓库 -->
+ <distributionManagement>
+	<repository>
+	    <id>releases</id>
+	    <url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
+    </repository>
+	<snapshotRepository>
+	    <id>snapshots</id>
+	    <url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
+	</snapshotRepository>
+ </distributionManagement>
+	 
+<build>  
+	<pluginManagement>
+	   <plugins>
+	   
+	    <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-eclipse-plugin</artifactId>
+	        <version>2.10</version>
+	        <configuration>
+	            <downloadSources>true</downloadSources>
+	        </configuration>
+	    </plugin>
+	    
+	    <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-source-plugin</artifactId>
+		    <version>3.0.1</version>
+		    <executions>
+		      <execution>
+		        <id>attach-sources</id>
+		        <phase>verify</phase>
+		        <goals>
+		          <goal>jar-no-fork</goal>
+		        </goals>
+		      </execution>
+		    </executions>
+		 </plugin>
+		 
+	   </plugins>
+	   
+	  </pluginManagement>
+</build> 
+ 
+  <modules>
+    <module>common-tool</module>
+    <module>providers</module>
+    <module>consumers</module>
+    <module>persistence</module>
+    <module>demoproject</module>
+  </modules>
+  <name>mavenproject</name>
+  <description>common：工具类；providers：服务提供方；consumers：消费者；persistence：数据持久化</description>
+</project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+
+	<rabbit:listener-container connection-factory="listenerConnectionFactory" acknowledge="auto" concurrency="5">
+		<rabbit:listener queues="orderResponseQueue.v2" ref="taobaoOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitOrderResponseQueue.v2" ref="jitOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitPromotionResponseQueue.v2" ref="jitPromotionManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitScheduleResponseQueue.v2" ref="jitScheduleManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitPoResponseQueue.v2" ref="jitPoManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitOmniOrderResponseQueue.v2" ref="jitOmniOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitCancelledOrderResponseQueue.v2" ref="jitCancelledOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="jitOccupiedOrderResponseQueue.v2" ref="jitOccupiedOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="refundResponseQueue.v2" ref="refundManagerImpl" method="onMessage" />
+		<rabbit:listener queues="wlbOrderResponseQueue.v2" ref="wlbOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="chainREOrdersResponseQueue.v2" ref="returnExchangeOrdersManagerImpl" method="onMessage" />
+		<rabbit:listener queues="chainSkuResponseQueue.v2" ref="uploadAmazonProductManagerImpl" method="onMessage" />
+		<rabbit:listener queues="fenxiaoScitemResponseQueue.v2" ref="uploadTaobaoFenxiaoSkuManagerImpl" method="onMessage" />
+		<rabbit:listener queues="invoiceResponseQueue.v2" ref="chainInvoiceManagerImpl" method="onMessage" />
+		<rabbit:listener queues="publicResponseQueue.v2" ref="publicJmsSendManagerImpl" method="onMessage" />
+		<rabbit:listener queues="taobaoSkuResponseQueue.v2" ref="uploadTaobaoSkuManagerImpl" method="onMessage" />
+		<rabbit:listener queues="workOrderResponseQueue.v2" ref="jingdongWorkOrderManagerImpl" method="onMessage" />
+		<rabbit:listener queues="workOrder2WOSResponseQueue.v2" ref="jingdongWorkOrderManagerImpl" method="onWOSMessage" />
+		<rabbit:listener queues="vipreturnResponseQueue.v2" ref="vipReturnManagerImpl" method="onMessage" />
+		<rabbit:listener queues="vipActualStorageResponseQueue.v2" ref="vipActualStorageManagerImpl" method="onMessage" />
+		<rabbit:listener queues="refundOrderResponseQueue.v2" ref="jingdongRefundApplyManagerImpl" method="onMessage" />
+	</rabbit:listener-container>
+
+	<!-- 以下几个是来自外部的消息队列，勿随意修改 -->
+	<rabbit:listener-container connection-factory="testListenerConnectionFactory" acknowledge="auto" concurrency="5">
+		<rabbit:listener queues="thirdParty.status.change.queue" ref="taobaoTmcMessageProduceImpl" method="onMessage" />
+		<rabbit:listener queues="order.tmall.o2o.status.change.queue" ref="taobaoTmcMessageProduceImpl" method="onQmMessage" />
+	</rabbit:listener-container>
+
+	<rabbit:listener-container connection-factory="testListenerConnectionFactory" acknowledge="auto">
+		<rabbit:listener queues="outstore.thirdParty.test.queue" ref="taobaoOrderConsignmentManagerImpl" method="onMessage" />
+		<rabbit:listener queues="order.taobao.refund.agree.queue" ref="afterSaleRefundManagerImpl" method="onMessage" />
+	</rabbit:listener-container>
+</beans>

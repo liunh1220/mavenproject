@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<description>Spring公共配置</description>
+	
+	<context:property-placeholder location="classpath:config/application.properties"
+        file-encoding="utf-8" ignore-unresolvable="true" />
+        
+	<!--开启注解-->
+	<context:annotation-config />
+	<context:component-scan base-package="com.example.zk.zookeeper"></context:component-scan>
+	
+	<bean id="zookeeperClient" class="com.example.zk.zookeeper.util.ZookeeperClientUtil">
+		<property name="servers" value="127.0.0.1:2181" />  
+        <property name="mainPath" value="/configuration/allconfig" /> 
+	</bean>
+	<bean id="zooKeeperPropertyPlaceholderConfigurer" class="com.example.zk.zookeeper.util.ZooKeeperPropertyPlaceholderConfigurer">
+		<property name="configurationClient" ref="${zk.zookeeperClient}"/>  
+    	<property name="order" value="${zk.order}" />  
+    	<property name="ignoreUnresolvablePlaceholders" value="${zk.ignoreUnresolvablePlaceholders}" />
+	</bean>
+	
+    
+</beans>

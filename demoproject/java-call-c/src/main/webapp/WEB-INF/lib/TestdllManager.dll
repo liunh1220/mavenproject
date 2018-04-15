@@ -1,0 +1,13 @@
+#include "TestdllManager.h"
+
+int i = 0;
+
+JNIEXPORT jint JNICALL Java_TestdllManager_getVal (JNIEnv *, jclass)
+{
+    return i;
+}
+
+JNIEXPORT void JNICALL Java_TestdllManager_setVal (JNIEnv *, jclass, jint j)
+{
+    i = j;
+}

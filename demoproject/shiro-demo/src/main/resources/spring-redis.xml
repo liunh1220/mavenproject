@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd" default-autowire="byName">
+
+	<description>redis配置</description>
+	
+	<!-- redis连接池 -->  
+	<bean id="jedisConfig" name="jedisConfig" class="redis.clients.jedis.JedisPoolConfig">   
+	    <property name="maxTotal" value="1024"></property>  
+	    <property name="maxIdle" value="200"></property>  
+	    <property name="maxWaitMillis" value="10000"></property>  
+	    <property name="testOnBorrow" value="true"></property>
+	    <property name="minEvictableIdleTimeMillis" value="300000"></property> 
+  		<property name="numTestsPerEvictionRun" value="3"></property> 
+  		<property name="timeBetweenEvictionRunsMillis" value="60000"></property> 
+	</bean>  
+	<!-- redis连接工厂 -->  
+	<bean id="jedisConnectionFactory" name="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy"> 
+	    <property name="hostName" value="127.0.0.1"></property>  
+	    <property name="port" value="6379"></property>  
+	    <property name="password" value=""></property> 
+	    <property name="timeout" value="15000"></property> 
+  		<property name="usePool" value="true"></property>  
+	    <property name="poolConfig" ref="jedisConfig"></property>  
+	</bean>
+	<!-- redis操作模板，这里采用尽量面向对象的模板 -->  
+	<bean id="jedisTemplate" name="jedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">  
+	    <property name="connectionFactory" ref="jedisConnectionFactory" />  
+	    <property name="keySerializer">  
+	        <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />  
+	    </property>  
+	    <property name="valueSerializer">  
+	        <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />  
+	    </property>  
+	</bean>
+	
+	<!-- <bean class="com.example.testproject.util.RedisCacheUtil"></bean> -->
+    
+</beans>
