@@ -14,7 +14,6 @@ import org.springframework.util.ClassUtils;
 /** 
  * 重写 org.springframework.beans.BeanUtils 的 copyProperties(Object source, Object target) 方法 
  * 从model复制属性到pojo中时,model中为null的属性不复制pojo中 
- * @author he.f1 
  */
 public abstract class BeanUtil extends org.springframework.beans.BeanUtils {
 
